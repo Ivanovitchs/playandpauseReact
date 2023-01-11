@@ -68,6 +68,8 @@ class Increment extends React.Component{
 constructor(props){
     super(props)
     this.state = {n:props.start,timer:null}
+    this.toggle=this.toggle.bind(this)
+    this.reinitialisation=this.reinitialisation.bind(this)
     
 }
 
@@ -85,21 +87,38 @@ pause(){
    })
 }
 play(){
+    window.clearInterval(this.state.timer)
     this.setState({
         timer:window.setInterval(this.increment.bind(this),1000)
     })
 }
 componentwillUnmount(){
+   window.clearInterval(this.state.timer)
+}
+
+label(){
+    return this.state.timer?'Pause':'Play'
+}
+
+toggle(){
+    return this.state.timer?this.pause():this.play()
+}
+
+reinitialisation(){
     this.pause()
+    this.play()
+    return this.setState((props,state)=>({
+        n:0
+    }))
 }
 
     render(){
         return(
            
             <div> 
-            <button onClick={this.pause.bind(this)}>Pause</button>
-            valeur: {this.state.n}
-            <button onClick={this.play.bind(this)}>play</button>
+                valeur: {this.state.n}
+           <button onClick={this.toggle}>{this.label()}</button>
+           <button onClick={this.reinitialisation}>réinitialisation</button>
             </div>
         )
     }
@@ -108,7 +127,7 @@ componentwillUnmount(){
 
 Increment.defaultProps={
     start:0,
-    step:10
+    step:1
 };
 
 function Home(){
